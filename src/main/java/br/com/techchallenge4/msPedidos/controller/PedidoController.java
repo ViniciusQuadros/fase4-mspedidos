@@ -36,7 +36,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/pedidosCliente/{id}")
     public ResponseEntity<Page<Pedido>> findByClienteId(@PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable, @PathVariable Long clienteId) {
         Page<Pedido> pedidos = pedidoService.getPedidosByClienteId(pageable, clienteId);
         return ResponseEntity.ok(pedidos);

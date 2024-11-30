@@ -57,16 +57,15 @@ public class PedidoServiceImpl implements PedidoService {
         }
         pedido.setValorTotal(valorTotal);
 
-        pedidoRepository.save(pedido);
+        Pedido newPedido = pedidoRepository.save(pedido);
 
         List<ProdutoEstoque> listaProdutoEstoque = new ArrayList<>();
         for(ItemPedido itemPedido : pedido.getItensPedido()) {
             listaProdutoEstoque.add(new ProdutoEstoque(itemPedido.getIdProduto(),itemPedido.getQuantidade()));
         }
-        produtoClient.atualizarEstoque();
+        produtoClient.atualizarEstoque(listaProdutoEstoque);
 
-        //return pedidoRepository.save();
-        return null;
+        return newPedido;
     }
 
     private static Pedido toPedido(PedidoRequest pedidoRequest) {

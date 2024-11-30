@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ItemPedidoRequest {
     private Long idProduto;
-    private int quantidade;
+    private Long quantidade;
 }
