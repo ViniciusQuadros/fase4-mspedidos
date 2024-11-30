@@ -1,10 +1,9 @@
 package br.com.techchallenge4.msPedidos.service.impl;
 
 import br.com.techchallenge4.msPedidos.Client.impl.ClienteClientImpl;
+import br.com.techchallenge4.msPedidos.Client.impl.LogisticaClientImpl;
 import br.com.techchallenge4.msPedidos.Client.impl.ProdutoClientImpl;
-import br.com.techchallenge4.msPedidos.dto.ClienteDTO;
-import br.com.techchallenge4.msPedidos.dto.ItemPedidoRequest;
-import br.com.techchallenge4.msPedidos.dto.PedidoRequest;
+import br.com.techchallenge4.msPedidos.dto.*;
 import br.com.techchallenge4.msPedidos.model.ItemPedido;
 import br.com.techchallenge4.msPedidos.model.Pedido;
 import br.com.techchallenge4.msPedidos.model.Produto;
@@ -35,13 +34,16 @@ public class PedidoServiceImpl implements PedidoService {
     @Autowired
     ProdutoClientImpl produtoClient;
 
+    @Autowired
+    LogisticaClientImpl logisticaClient;
+
     @Override
     public Pedido criarPedido(PedidoRequest pedidoRequest) {
 
         Pedido pedido = toPedido(pedidoRequest);
 
-        ClienteDTO clienteDTO = clienteClient.buscarCliente(pedido.getClienteId());
-        pedido.setNomeCliente(clienteDTO.getNome());
+        ClienteDTO cliente = clienteClient.buscarCliente(pedido.getClienteId());
+        pedido.setNomeCliente(cliente.getNome());
 
         BigDecimal valorTotal = BigDecimal.ZERO;
         for(ItemPedido itemPedido : pedido.getItensPedido()) {
@@ -57,15 +59,49 @@ public class PedidoServiceImpl implements PedidoService {
         }
         pedido.setValorTotal(valorTotal);
 
-        Pedido newPedido = pedidoRepository.save(pedido);
-
         List<ProdutoEstoque> listaProdutoEstoque = new ArrayList<>();
         for(ItemPedido itemPedido : pedido.getItensPedido()) {
             listaProdutoEstoque.add(new ProdutoEstoque(itemPedido.getIdProduto(),itemPedido.getQuantidade()));
         }
         produtoClient.atualizarEstoque(listaProdutoEstoque);
 
-        return newPedido;
+        ShippingDTOResponse shippingDTOResponse = enviarPedidoLogistica(cliente, pedido);
+
+        pedido.setIdLogistica(shippingDTOResponse.id());
+
+        return pedidoRepository.save(pedido);
+    }
+
+    private ShippingDTOResponse enviarPedidoLogistica(ClienteDTO cliente, Pedido pedido) {
+        ShippingAddressDTO shippingAddressDTO = ShippingAddressDTO.builder()
+                .street(cliente.getEnderecos().get(0).getLogradouro())
+                .number(Integer.valueOf(cliente.getEnderecos().get(0).getNumero()))
+                .complement(cliente.getEnderecos().get(0).getComplemento())
+                .city(cliente.getEnderecos().get(0).getCidade())
+                .neighborhood(cliente.getEnderecos().get(0).getBairro())
+                .state(cliente.getEnderecos().get(0).getEstado())
+                .zipCode(Integer.valueOf(cliente.getEnderecos().get(0).getCep()))
+                .country("Brazil")
+                .phone(null)
+                .build();
+
+        List<ShippingProductDTO> shippingProductDTOList = new ArrayList<>();
+        for(ItemPedido itemPedido : pedido.getItensPedido()) {
+            shippingProductDTOList.add(ShippingProductDTO.builder()
+                    .code(String.valueOf(itemPedido.getIdProduto()))
+                    .quantity(String.valueOf(itemPedido.getQuantidade()))
+                    .build());
+        }
+
+        ShippingDTORequest shippingDTORequest = ShippingDTORequest.builder()
+                .orderCode(pedido.getId().toString())
+                .recipient(pedido.getNomeCliente())
+                .address(shippingAddressDTO)
+                .products(shippingProductDTOList)
+                .build();
+
+        ShippingDTOResponse shippingDTOResponse = logisticaClient.criarLogistica(shippingDTORequest);
+        return shippingDTOResponse;
     }
 
     private static Pedido toPedido(PedidoRequest pedidoRequest) {
