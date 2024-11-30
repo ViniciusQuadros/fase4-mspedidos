@@ -96,6 +96,11 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    public Page<Pedido> getPedidosByClienteId(Pageable pageable, Long clienteId) {
+        return pedidoRepository.findByClienteId(clienteId, pageable);
+    }
+
+    @Override
     public Pedido atualizarPedido(Long pedidoId, Pedido pedidoRequest) {
         Optional<Pedido> pedidoOptional = pedidoRepository.findById(pedidoId);
         if(pedidoOptional.isPresent()) {

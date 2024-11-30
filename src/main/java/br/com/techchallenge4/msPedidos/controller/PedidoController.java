@@ -18,6 +18,12 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
+    @PostMapping
+    public ResponseEntity<Pedido> criarPedido(@RequestBody PedidoRequest pedido){
+        Pedido pedidoResponse = pedidoService.criarPedido(pedido);
+        return new ResponseEntity<>(pedidoResponse, HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<Page<Pedido>> findAll(@PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable) {
         Page<Pedido> pedidos = pedidoService.getPedidos(pageable);
@@ -30,10 +36,10 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
-    @PostMapping
-    public ResponseEntity<Pedido> criarPedido(@RequestBody PedidoRequest pedido){
-        Pedido pedidoResponse = pedidoService.criarPedido(pedido);
-        return new ResponseEntity<>(pedidoResponse, HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<Page<Pedido>> findByClienteId(@PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable, @PathVariable Long clienteId) {
+        Page<Pedido> pedidos = pedidoService.getPedidosByClienteId(pageable, clienteId);
+        return ResponseEntity.ok(pedidos);
     }
 
 }

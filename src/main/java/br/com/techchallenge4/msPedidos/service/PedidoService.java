@@ -9,6 +9,7 @@ public interface PedidoService {
     Pedido criarPedido(PedidoRequest pedidoRequest);
     Page<Pedido> getPedidos(Pageable pageable);
     Pedido getPedido(Long id);
+    Page<Pedido> getPedidosByClienteId(Pageable pageable, Long id);
     Pedido atualizarPedido(Long pedidoId, Pedido pedidoRequest);
     void excluirPedido(Long id);
 
