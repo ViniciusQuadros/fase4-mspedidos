@@ -53,7 +53,7 @@ public class PedidoServiceImpl implements PedidoService {
                 throw new NoSuchElementException("Produto não está ativo para compra");
             }
             itemPedido.setPreco(BigDecimal.valueOf(produto.getPreco()));
-            valorTotal = valorTotal.add(itemPedido.getPreco());
+            valorTotal = valorTotal.add(itemPedido.getPreco().multiply(BigDecimal.valueOf(itemPedido.getQuantidade())));
         }
         pedido.setValorTotal(valorTotal);
 
