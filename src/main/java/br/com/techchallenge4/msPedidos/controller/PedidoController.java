@@ -3,6 +3,7 @@ package br.com.techchallenge4.msPedidos.controller;
 import br.com.techchallenge4.msPedidos.dto.PedidoRequest;
 import br.com.techchallenge4.msPedidos.model.Pedido;
 import br.com.techchallenge4.msPedidos.service.PedidoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/pedidos")
+@RequiredArgsConstructor
 public class PedidoController {
 
     @Autowired
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
 
     @PostMapping
     public ResponseEntity<Pedido> criarPedido(@RequestBody PedidoRequest pedido){
