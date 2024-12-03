@@ -45,7 +45,7 @@ public class ProdutoClientImpl implements ProdutoClient {
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.put(
-                "http://localhost:8082/api/v1/atualizar/estoque",
+                "http://localhost:8082/api/v1/produtos/atualizar/estoque",
                 listaProdutoEstoque
         );
     }

@@ -1,4 +1,4 @@
-package br.com.techchallenge4.msPedidos.utils;
+package br.com.techchallenge4.utils;
 
 import br.com.techchallenge4.msPedidos.dto.ItemPedidoRequest;
 import br.com.techchallenge4.msPedidos.dto.PedidoRequest;
