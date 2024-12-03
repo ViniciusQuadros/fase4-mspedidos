@@ -2,6 +2,7 @@ package br.com.techchallenge4.msPedidos.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 public class Pedido implements Serializable {
 
     private static final long serialVersionUID = 1L;
