@@ -27,7 +27,7 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Pedido>> findAll(@PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable) {
+    public ResponseEntity<Page<Pedido>> findAll(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<Pedido> pedidos = pedidoService.getPedidos(pageable);
         return ResponseEntity.ok(pedidos);
     }
@@ -39,7 +39,7 @@ public class PedidoController {
     }
 
     @GetMapping("/pedidosCliente/{id}")
-    public ResponseEntity<Page<Pedido>> findByClienteId(@PageableDefault(page = 0, size = 10, sort = "nome") Pageable pageable, @PathVariable Long clienteId) {
+    public ResponseEntity<Page<Pedido>> findByClienteId(@PageableDefault(page = 0, size = 10) Pageable pageable, @PathVariable Long clienteId) {
         Page<Pedido> pedidos = pedidoService.getPedidosByClienteId(pageable, clienteId);
         return ResponseEntity.ok(pedidos);
     }

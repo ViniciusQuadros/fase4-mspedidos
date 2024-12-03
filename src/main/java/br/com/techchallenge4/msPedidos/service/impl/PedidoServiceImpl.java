@@ -65,11 +65,13 @@ public class PedidoServiceImpl implements PedidoService {
         }
         produtoClient.atualizarEstoque(listaProdutoEstoque);
 
-        ShippingDTOResponse shippingDTOResponse = enviarPedidoLogistica(cliente, pedido);
+        Pedido pedidoSave = pedidoRepository.save(pedido);
 
-        pedido.setIdLogistica(shippingDTOResponse.id());
+        ShippingDTOResponse shippingDTOResponse = enviarPedidoLogistica(cliente, pedidoSave);
 
-        return pedidoRepository.save(pedido);
+        pedidoSave.setIdLogistica(shippingDTOResponse.id());
+        pedidoRepository.save(pedidoSave);
+        return pedidoSave;
     }
 
     private ShippingDTOResponse enviarPedidoLogistica(ClienteDTO cliente, Pedido pedido) {
@@ -80,7 +82,7 @@ public class PedidoServiceImpl implements PedidoService {
                 .city(cliente.getEnderecos().get(0).getCidade())
                 .neighborhood(cliente.getEnderecos().get(0).getBairro())
                 .state(cliente.getEnderecos().get(0).getEstado())
-                .zipCode(Integer.valueOf(cliente.getEnderecos().get(0).getCep()))
+                .zipCode(Integer.valueOf(cliente.getEnderecos().get(0).getCep().replace("-", "")))
                 .country("Brazil")
                 .phone(null)
                 .build();
