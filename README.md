@@ -1,6 +1,6 @@
 # Microsserviço de Gestão de Pedidos
 
-Micro serviço com a responsabilidade de orquestrar os microserviços necessários para se contruir e efetivar 
+Micro serviço com a responsabilidade de orquestrar os microserviços necessários para se construir e efetivar pedidos
 
 - processamento de pedidos
 - acionamento de microsserviço de logística de entrega para garantir a entrega dos produtos
@@ -20,4 +20,4 @@ docker-compose up -d
 ```
 
 ## Swagger
-http://localhost:8084/swagger-ui/index.html
+http://localhost:8083/swagger-ui/index.html

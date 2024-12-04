@@ -68,7 +68,9 @@ public class PedidoServiceImpl implements PedidoService {
         Pedido pedidoSave = pedidoRepository.save(pedido);
 
         ShippingDTOResponse shippingDTOResponse = enviarPedidoLogistica(cliente, pedidoSave);
-
+        for(ItemPedido itemPedido : pedido.getItensPedido()) {
+            itemPedido.setPedido(pedidoSave);
+        }
         pedidoSave.setIdLogistica(shippingDTOResponse.id());
         pedidoRepository.save(pedidoSave);
         return pedidoSave;
